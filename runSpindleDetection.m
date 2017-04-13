@@ -7,7 +7,14 @@
 % To run the spindle detection on your EDF, replace the filename below
 % with your EDF file. 
 % The sample EDF used in this script has only 3 channels. Modify the script
-% accordingly for your EDF in case of more than 3 channels. 
+% accordingly for your EDF in case of more than 3 channels (Fp1-A1, Cz-A1, O1-A1).
+%
+% Note: Additional steps were carried out for the results in the paper for McSleep
+%       This file only demonstrates a basic idea of the proposed McSleep method. 
+% 1. Parallel detection on 30 second epochs
+% 2. Discarding spindles less than 0.5 seconds and more than 3 seconds. 
+
+
 %% Initialize
 clear; close all; clc;
 
