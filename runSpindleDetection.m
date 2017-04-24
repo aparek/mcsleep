@@ -43,7 +43,7 @@ params.channels = [2 3 14];
 % In order to see cost function behavior, run demo.m
 params.calculateCost = 0;   
 %% Run parallel detection for transient separation
-% Start parallel pool. Adjust according to number of virual
+% Start parallel pool. Adjust according to number of virtual
 % cores/processors. Starting the parallel pool for the first time may take
 % few seconds. 
 
