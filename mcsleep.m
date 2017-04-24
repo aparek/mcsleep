@@ -65,10 +65,12 @@ for i = 1:param.Nit
     d2 = d2 - (v-c);
     
     % Calculate cost
-    cost(i) = 0.5 * norm(y - (x + HT(c,param.K, param.O)), 'fro')^2 + ...
+    if param.calculateCost
+        cost(i) = 0.5 * norm(y - (x + HT(c,param.K, param.O)), 'fro')^2 + ...
              param.lam1 * norm(x,1) + ...
              param.lam2 * norm(diff(x,2),1) + ...
              param.lam3 * sum_of_nuc_norm(c);
+    end
 end
 
 % Return oscillatory component calculated using estiamted coefficients
