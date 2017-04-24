@@ -16,7 +16,6 @@ if k ==0
         y(:,(i-1)*seg+1:i*seg) = u(i,:,:);
     end
 else
-    disp('This combination of segment size and overlap is not tested')
     [blocks, channels,seg] = size(u);
     y = zeros(channels, (blocks+1) * (s-k));
     w = 1 + y;
