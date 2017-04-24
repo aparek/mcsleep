@@ -51,7 +51,7 @@ HT = @(x,s,k) Op_AT(x,s,k);
 % Set the parameters for the McSleep method and run the transient
 % separation method. 
 param = struct('lam1',0.6, 'lam2',6.5,'lam3',38,'K',fs,'mu', 0.5,'O',fs/2,'Nit',80); 
-tic, [x,s,cost] = fusedLassoLLR_doubleADMM(y', H, HT, param); toc
+tic, [x,s,cost] = mcsleep(y', H, HT, param); toc
 
 % Plot the cost function history
 figure(1), clf
