@@ -37,6 +37,8 @@ HT = @(x,s,k) Op_AT(x,s,k);
 % Define parameters
 param = struct('lam1',0.6, 'lam2',10.5,'lam3',63,'K',200,...
                 'mu', 0.5,'O',100,'Nit',40); 
+param.calculateCost = 1;
+
 tic, [x,s,cost] = mcsleep(Y, H, HT, param); toc
 
 % Calculate the residual
