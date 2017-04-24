@@ -1,28 +1,53 @@
 %% This script provides a demo for the McSleep spindle detection method
 %
-% Last EDIT: 4/1/17
+% Last EDIT: 4/22/17
 % Ankit Parekh
-% ankit.parekh@nyu.edu
+% Perm. Contact: ankit.parekh@nyu.edu
 %
 % To run the spindle detection on your EDF, replace the filename below
 % with your EDF file. 
 % The sample EDF used in this script has only 3 channels. Modify the script
 % accordingly for your EDF in case of more than 3 channels (Fp1-A1, Cz-A1, O1-A1).
 %
-% Note: Additional steps were carried out for the results in the paper for McSleep
-%       This file only demonstrates a basic idea of the proposed McSleep method. 
-% 1. Parallel detection on 30 second epochs
-% 2. Discarding spindles less than 0.5 seconds and more than 3 seconds. 
-
-
+% Please cite as: 
+% Multichannel Sleep Spindle Detection using Sparse Low-Rank Optimization 
+% A. Parekh, I. W. Selesnick, R. S. Osorio, A. W. Varga, D. M. Rapoport and I. Ayappa 
+% bioRxiv Preprint, doi: https://doi.org/10.1101/104414
 %% Initialize
 clear; close all; clc;
 
-%% Load EDF
-filename = 'excerpt2';
-[data, header] = lab_read_edf([filename,'.edf']);
-fs = header.samplingrate;
-disp('EDF loaded')  
+%% Select parameters for McSleep
+
+params.filename = 'excerpt2';
+params.lam1 = 0.3;
+params.lam2 = 6.5;
+params.lam3 = 36;
+params.mu = 0.5;
+params.Nit = 80;
+params.K = 200;
+params.O = 100;
+
+% Bandpass filter & Teager operator parameters
+params.f1 = 11;
+params.f2 = 17;
+params.filtOrder = 4;
+params.Threshold = 0.5; 
+
+% Other function parameters
+params.channels = [2 3 14];
+% Don't calculate cost to save time
+% In order to see cost function behavior, run demo.m
+params.calculateCost = 0;   
+%% Run parallel detection for transient separation
+% Start parallel pool. Adjust according to number of virual
+% cores/processors. Starting the parallel pool for the first time may take
+% few seconds. 
+
+if isempty(gcp) 
+        p = parpool(4); 
+end
+
+spindles = parallelSpindleDetection(params);
 
 %% Load one multi channel epoch
 epoch = 1;
@@ -34,7 +59,7 @@ n = 0:N-1;
 % Plot the multichannel data
 figure(1), clf
 gap = 100;
-plot(n/fs, y(:,1), n/fs, y(:,2)-gap, n/fs, y(:,3)-2*gap)
+plot(n/fs, y(:,channels n/fs, y(:,2)-gap, n/fs, y(:,3)-2*gap)
 box off
 xlabel('Time (s)')
 ylabel('\mu V')
