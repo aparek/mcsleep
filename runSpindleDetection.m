@@ -9,15 +9,19 @@
 % The sample EDF used in this script has only 3 channels. Modify the script
 % accordingly for your EDF in case of more than 3 channels (Fp1-A1, Cz-A1, O1-A1).
 %
+% The visual detection by experts are stored as vd1 and vd2. These are
+% obtained from the DREAMS Database. 
+%
 % Please cite as: 
 % Multichannel Sleep Spindle Detection using Sparse Low-Rank Optimization 
 % A. Parekh, I. W. Selesnick, R. S. Osorio, A. W. Varga, D. M. Rapoport and I. Ayappa 
 % bioRxiv Preprint, doi: https://doi.org/10.1101/104414
+
 %% Initialize
 clear; close all; clc;
-
+warning('off','all')
 %% Select parameters for McSleep
-
+% Adjust parameters to improve performance 
 params.filename = 'excerpt2';
 params.lam1 = 0.3;
 params.lam2 = 6.5;
@@ -44,109 +48,42 @@ params.calculateCost = 0;
 % few seconds. 
 
 if isempty(gcp) 
-        p = parpool(4); 
+        p = parpool(8); 
 end
 
 spindles = parallelSpindleDetection(params);
+%% F1 Score calculation
 
-%% Load one multi channel epoch
-epoch = 1;
-channels = [2 3 14];    %Select the channels to be used for analysis
-y = data(channels,(epoch-1)*30*fs+1:epoch*30*fs)';
-N = length(y);
+% Change the filename and sampling frequency according to your visual 
+% detection filenames
+
+N = length(spindles);
+fs = 200;
+visualScorer1 = load(['Visual_scoring1_',params.filename,'.txt']);
+vd1 = obtainVisualRecord(visualScorer1,fs,N);   
+visualScorer2 = load(['Visual_scoring2_',params.filename,'.txt']);
+vd2 = obtainVisualRecord(visualScorer2,fs,N);
+
+Score = F1score(spindles, vd1, vd2);
+Score{1}'; Score{2}
+
+%% Plot the results
+
+[data, header] = lab_read_edf([params.filename,'.edf']);
+N = length(data);
 n = 0:N-1;
-
-% Plot the multichannel data
-figure(1), clf
-gap = 100;
-plot(n/fs, y(:,channels n/fs, y(:,2)-gap, n/fs, y(:,3)-2*gap)
-box off
-xlabel('Time (s)')
-ylabel('\mu V')
-ylim([-3*gap gap])
-xlim([1 30])
-set(gca,'YTick',[])
-title('Raw EEG signal')
-legend('Fp1-A1', 'CZ-A1', 'O1-A1')
-
-%% Denoise using only low rank regluarizer
-H = @(x,s,k) Op_A(x,s,k);
-HT = @(x,s,k) Op_AT(x,s,k);
-
-% Set the parameters for the McSleep method and run the transient
-% separation method. 
-param = struct('lam1',0.6, 'lam2',6.5,'lam3',38,'K',fs,'mu', 0.5,'O',fs/2,'Nit',80); 
-tic, [x,s,cost] = mcsleep(y', H, HT, param); toc
-
-% Plot the cost function history
-figure(1), clf
-plot(cost,'k')
-title('Cost function history')
-box off
-xlabel('Time(s)')
-%% Plot the estimated signal using only low rank regularizer
-figure(1), clf
-gap = 60;
-plot(n/fs, x(1,:), n/fs, x(2,:)-gap, n/fs, x(3,:)-2*gap)
-box off
-xlabel('Time (s)')
-ylabel('\mu V')
-ylim([-3*gap 2*gap])
-xlim([0 30])
-set(gca,'YTick',[])
-title('Estimated Transient Component')
-legend('Fp1-A1', 'CZ-A1', 'O1-A1')
-
-
-figure(2), clf
-gap = 60;
-plot(n/fs, s(1,:), n/fs, s(2,:)-gap, n/fs, s(3,:)-2*gap)
-box off
-xlabel('Time (s)')
-ylabel('\mu V')
-ylim([-3*gap 2*gap])
-xlim([0 30])
-set(gca,'YTick',[])
-title('Estimated Oscillatory Component ')
-legend('Fp1-A1', 'CZ-A1', 'O1-A1')
-
-
-% Residual
-r = y'-(x+s);
 figure(3), clf
 gap = 60;
-plot(n/fs, r(1,:), n/fs, r(2,:)-gap, n/fs, r(3,:)-2*gap)
+plot(n/fs, data(params.channels(1),:), n/fs, data(params.channels(2),:)-gap, ...
+    n/fs, data(params.channels(3),:)-2*gap, n/fs, spindles*20-3*gap, n/fs, vd1*20-4*gap,...
+    n/fs, vd2*20-5*gap);
 box off
 xlabel('Time (s)')
 ylabel('\mu V')
-ylim([-3*gap 2*gap])
-xlim([0 30])
-set(gca,'YTick',[])
-title('Residual')
-legend('Fp1-A1', 'CZ-A1', 'O1-A1')
-
-
-
-%% Use envelope to detect start and end of spindles
-c = 0.2; % Threshold for Teager operator
-[B,A] = butter(4, [11 16]/(fs/2));
-sig = filtfilt(B,A,s');
-X = T(mean(sig,2));
-bin = [0, X > c]';
-
-% Discard spindles less than 0.5 seconds and more than 3 seconds
-bin = discardSpindles(bin,fs);
-figure(3), clf
-gap = 60;
-plot(n/fs, y(:,1), n/fs, y(:,2)-gap, n/fs, y(:,3)-2*gap, ...
-    n/fs, bin*20-3*gap);
-box off
-xlabel('Time (s)')
-ylabel('\mu V')
-ylim([-4*gap 2*gap])
-xlim([0 30])
-set(gca,'YTick',[])
 title('Spindle detection using McSleep')
-legend('Fp1-A1', 'CZ-A1', 'O1-A1', 'Detected Spindles')
-
+ylim([-6*gap gap])
+xlim([1 N/fs])
+set(gca,'YTick',[])
+legend('Channel 1', 'Channel 2', 'Channel 3', 'McSleep detection', ...
+       'Expert 1', 'Expert 2')
 
