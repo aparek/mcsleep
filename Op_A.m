@@ -27,7 +27,6 @@ elseif (s/k == 2)
     end
 else
     if mod(n/(s-k),2) == 0
-        disp('This combination of segment size and overlap is not tested')
         numBlocks = floor(n/(s-k)) + 1;
         u = zeros(numBlocks, m, s);
         y = [y, zeros(m, n/(s-k))];
