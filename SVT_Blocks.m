@@ -8,6 +8,12 @@ function x = SVT_Blocks(y,lam)
 %
 % Ankit Parekh (ankit.parekh@nyu.edu)
 % Last Edit: 1/19/2017
+% 
+% Copyright (c) 2017. Ankit Parekh 
+% 
+% Please cite as: Multichannel Sleep Spindle Detection using Sparse Low-Rank Optimization 
+% A. Parekh, I. W. Selesnick, R. S. Osorio, A. W. Varga, D. M. Rapoport and I. Ayappa 
+% bioRxiv Preprint 2017, doi: https://doi.org/10.1101/104414
 
 [blocks,channels,seg] = size(y);
 x = zeros(blocks,channels,seg);
