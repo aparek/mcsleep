@@ -1,6 +1,6 @@
 %% This script provides a demo for the McSleep spindle detection method
 %
-% Last EDIT: 4/22/17
+% Last EDIT: 4/25/17
 % Ankit Parekh
 % Perm. Contact: ankit.parekh@nyu.edu
 %
@@ -9,6 +9,9 @@
 % The sample EDF used in this script has only 3 channels. Modify the script
 % accordingly for your EDF in case of more than 3 channels (Fp1-A1, Cz-A1, O1-A1).
 %
+% The script downloads the EDF files from the DREAMS database. Please cite
+% the authors of the DREAMS database appropriately when using this code. 
+% 
 % The visual detection by experts are stored as vd1 and vd2. These are
 % obtained from the DREAMS Database. 
 %
@@ -20,9 +23,38 @@
 %% Initialize
 clear; close all; clc;
 warning('off','all')
+%% Download data from DREAMS database
+
+% EDF files
+params.filename = 'excerpt2';
+url = ['http://www.tcts.fpms.ac.be/~devuyst/Databases/DatabaseSpindles/',params.filename,'.edf'];
+websave([params.filename,'.edf'],url);
+[data, header] = lab_read_edf([params.filename,'.edf']);
+N = length(data);
+n = 0:N-1;
+fs = header.samplingrate;   
+
+% Visual detections
+url = ['http://www.tcts.fpms.ac.be/~devuyst/Databases/DatabaseSpindles/Visual_scoring1_',params.filename,'.txt'];
+websave(['Visual_scoring1_',params.filename,'.txt'],url);
+
+url = ['http://www.tcts.fpms.ac.be/~devuyst/Databases/DatabaseSpindles/Visual_scoring2_',params.filename,'.txt'];
+websave(['Visual_scoring2_',params.filename,'.txt'],url);
+
+% Load the visual detections
+fid = fopen(['Visual_scoring1_',params.filename,'.txt'],'r');
+visualScorer1 = textscan(fid,'%f %f','headerlines',1,'Delimiter','%n');
+visualScorer1 = [visualScorer1{1}, visualScorer1{2}];
+fclose(fid);
+vd1 = obtainVisualRecord(visualScorer1,fs,N);   
+
+fid = fopen(['Visual_scoring2_',params.filename,'.txt'],'r');
+visualScorer2 = textscan(fid,'%f %f','headerlines',1,'Delimiter','%n');
+visualScorer2 = [visualScorer2{1}, visualScorer2{2}];
+fclose(fid);
+vd2 = obtainVisualRecord(visualScorer2,fs,N);  
 %% Select parameters for McSleep
 % Adjust parameters to improve performance 
-params.filename = 'excerpt2';
 params.lam1 = 0.3;
 params.lam2 = 6.5;
 params.lam3 = 36;
@@ -56,22 +88,15 @@ spindles = parallelSpindleDetection(params);
 
 % Change the filename and sampling frequency according to your visual 
 % detection filenames
-
+format long g
 N = length(spindles);
 fs = 200;
-visualScorer1 = load(['Visual_scoring1_',params.filename,'.txt']);
-vd1 = obtainVisualRecord(visualScorer1,fs,N);   
-visualScorer2 = load(['Visual_scoring2_',params.filename,'.txt']);
-vd2 = obtainVisualRecord(visualScorer2,fs,N);
 
 Score = F1score(spindles, vd1, vd2);
 Score{1}'; Score{2}
 
 %% Plot the results
 
-[data, header] = lab_read_edf([params.filename,'.edf']);
-N = length(data);
-n = 0:N-1;
 figure(3), clf
 gap = 60;
 plot(n/fs, data(params.channels(1),:), n/fs, data(params.channels(2),:)-gap, ...
