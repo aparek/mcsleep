@@ -13,6 +13,12 @@ function [spindles] = parallelSpindleDetection(params)
 % Last EDIT: 4/22/2017
 % Ankit Parekh
 % Perm. Contact: ankit.parekh@nyu.edu
+%
+% Copyright (c) 2017. Ankit Parekh 
+% 
+% Please cite as: Multichannel Sleep Spindle Detection using Sparse Low-Rank Optimization 
+% A. Parekh, I. W. Selesnick, R. S. Osorio, A. W. Varga, D. M. Rapoport and I. Ayappa 
+% bioRxiv Preprint 2017, doi: https://doi.org/10.1101/104414
 
 fprintf('Multichannel spindle detector \n');
 % Load the edf and necessary information
