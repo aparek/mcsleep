@@ -1,11 +1,18 @@
 %% This script is a demo of the McSleep spindle detection method
-% Copyright (c) 2017 Ankit Parekh
 %
-% Please contact ankit.parekh@nyu.edu for more info on how to cite the code
-% below for your use. 
+% Last Edit: 4/25/2017
+% Perm. Contact: ankit.parekh@nyu.edu
+% 
+% This is a very basic demo of the proposed mcsleep method. 
+% For a full fledged parallel version as in the paper, see 
+% runSpindleDetection.m
+%
+% Copyright (c) 2017. Ankit Parekh 
+% 
+% Please cite as: Multichannel Sleep Spindle Detection using Sparse Low-Rank Optimization 
+% A. Parekh, I. W. Selesnick, R. S. Osorio, A. W. Varga, D. M. Rapoport and I. Ayappa 
+% bioRxiv Preprint 2017, doi: https://doi.org/10.1101/104414
 
-% Note this script has been tested on MacOS and Windows. For linux, please
-% email Ankit Parekh. 
 
 %% Load EDF and Expert annotation
 clear; close all; clc;
