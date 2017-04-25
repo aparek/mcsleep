@@ -19,6 +19,9 @@
 % Multichannel Sleep Spindle Detection using Sparse Low-Rank Optimization 
 % A. Parekh, I. W. Selesnick, R. S. Osorio, A. W. Varga, D. M. Rapoport and I. Ayappa 
 % bioRxiv Preprint, doi: https://doi.org/10.1101/104414
+%
+% Note: In the paper above, we discard epochs where body movement artifacts were visible. 
+%       Since this script is for illustration purposes only, we do not reject any epochs here
 
 %% Initialize
 clear; close all; clc;
