@@ -4,6 +4,11 @@ function [spindles] = parallelSpindleDetection(params)
 % This function runs the mcsleep spindle detection in parallel
 % Ensure that the EDF file given by params.filename is in the current
 % directory (or added to path)
+% 
+% Please cite as: 
+% Multichannel Sleep Spindle Detection using Sparse Low-Rank Optimization 
+% A. Parekh, I. W. Selesnick, R. S. Osorio, A. W. Varga, D. M. Rapoport and I. Ayappa 
+% bioRxiv Preprint 2017, doi: https://doi.org/10.1101/104414
 %
 % Last EDIT: 4/22/2017
 % Ankit Parekh
