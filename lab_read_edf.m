@@ -154,7 +154,7 @@ while strcmp(hdr.channelname(m,1:15),'EDF Annotations')
         end
     end
     clearvars i j tmp eventstmp eventsall numberstops
-    m = m - 1;
+    m = m-1;
 end
 
 if size(header.events.POS,2) > 1
