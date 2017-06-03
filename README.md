@@ -1,6 +1,6 @@
 # McSleep: Multichannel sleep spindle detector for sleep EEG
 
-This program detects sleep spindles using a multichannel transient separation algorithm.
+This program detects sleep spindles simultaneously across all channels of a multichannel human sleep EEG using a multichannel transient separation algorithm.
 Please see the publication below for further details. 
 
 To run a quick demo, run the file demo.m 
