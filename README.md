@@ -12,4 +12,4 @@ Permanent Contact: ankit.parekh@nyu.edu
 Please cite as: 
 Multichannel Sleep Spindle Detection using Sparse Low-Rank Optimization
 A. Parekh, I. W. Selesnick, R. S. Osorio, A. W. Varga, D. M. Rapoport and I. Ayappa
-Journal of Neuroscience Methods, In Press, 2017. (bioRxiv https://doi.org/10.1101/104414)
+Journal of Neuroscience Methods, Vol. 288, pp. 1-16, Aug. 2017. (bioRxiv https://doi.org/10.1016/j.jneumeth.2017.06.004)
