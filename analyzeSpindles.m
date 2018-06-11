@@ -10,25 +10,25 @@ function [spindles] = analyzeSpindles(params)
 % A. Parekh, I. W. Selesnick, R. S. Osorio, A. W. Varga, D. M. Rapoport and I. Ayappa 
 % bioRxiv Preprint 2017, doi: https://doi.org/10.1101/104414
 %
-% Last EDIT: 4/22/2017
+% Last EDIT: 6/11/2018
 % Ankit Parekh
 % Perm. Contact: ankit.parekh@nyu.edu
-%
-% Copyright (c) 2017. Ankit Parekh 
-% 
+%                ankit.parekh@mssm.edu
+
+fprintf('========================\n')
 fprintf('Multichannel spindle detector \n');
 numChannels = size(params.y,1);
 fs = params.fs;
 N = size(params.y,2);
 
 % Estimate the raw oscillations using fusedLasso LLR
-fprintf('Starting Fused Lasso LLR algorithm ...\n')
+fprintf('Starting McSleep algorithm ...\n')
 
 % Create H and HT transforms. See paper for details.
 H = @(x,s,k) Op_A(x,s,k);
 HT = @(x,s,k) Op_AT(x,s,k);
 
-fprintf('Requested Fused Lasso LLR algorithm to be run on full EEG ...\n')
+fprintf('Requested McSleep algorithm to be run on full EEG ...\n')
 fprintf('Over-riding the calculate cost option for parallel execution ... \n')
 
 %Convert data for parfor
@@ -109,6 +109,7 @@ end
 
 spindles = [0 binary];
 fprintf('Spindle calculation done ... \n');
+fprintf('========================\n')
 
 %% Functions from Warby et al. 2014 for discarding spindles
 
